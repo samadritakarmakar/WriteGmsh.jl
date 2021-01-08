@@ -1,0 +1,4 @@
+name = "WriteGmsh"
+uuid = "c907d0eb-9dc9-4d4e-87a7-17b7e5726a95"
+authors = ["sam <samadritakarmakar@gmail.com>"]
+version = "0.1.0"
