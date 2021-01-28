@@ -74,7 +74,7 @@ end
 nodeTags represents the connectivity of a single element.
 """
 function push!(elementArray::Array{Element, 1}, dim::Int64, attributes::Array{Int64, 1},
-    nodeTags::Array{Int32, 1}, elementDict = createElementDict())
+    nodeTags::Array{T, 1}, elementDict = createElementDict()) where T
     numOfNodesPerElement = length(nodeTags)
     gmshElementType::Int64 = getGmshElementType(elementDict, numOfNodesPerElement, dim)
     push!(elementArray, Element(dim, gmshElementType, attributes, nodeTags, numOfNodesPerElement))
@@ -89,7 +89,7 @@ nodeTags represents the connectivity of all the elements. Each row is the connec
 single element.
 """
 function push!(elementArray::Array{Element, 1}, dim::Int64, attributes::Array{Int64, 1},
-    nodeTags::Array{Int32, 2}, elementDict = createElementDict())
+    nodeTags::Array{T, 2}, elementDict = createElementDict()) where T
     numOfNodesPerElement = length(nodeTags[1,:])
     gmshElementType::Int64 = getGmshElementType(elementDict, numOfNodesPerElement, dim)
     for i ∈ 1:length(nodeTags[:,1])
