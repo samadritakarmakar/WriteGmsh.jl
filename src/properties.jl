@@ -15,7 +15,7 @@ end
 
     2 is the Dimension, 1 is the Attribute. "Lock" is the name of the attribute.
 """
-function push!(physicalName::PhysicalNames, dimTag::Tuple{Int64, Int64}, name::String)
+function pushPhysicalName!(physicalNames::PhysicalNames, dimTag::Tuple{Int64, Int64}, name::String)
     push!(physicalNames.dimTags, dimTag)
     push!(physicalNames.names, name)
     return nothing
@@ -62,8 +62,8 @@ end
 struct Element
     dim::Int64
     gmshElementType::Int64
-    attributes::Array{Int64, 1}
-    nodeTags::Array{Int64, 1}
+    attributes::AbstractVector{Int64}
+    nodeTags::AbstractVector{Int64}
     numOfNodes::Int64
 end
 
@@ -73,8 +73,8 @@ end
 
 nodeTags represents the connectivity of a single element.
 """
-function push!(elementArray::Array{Element, 1}, dim::Int64, attributes::Array{Int64, 1},
-    nodeTags::Array{T, 1}, elementDict = createElementDict()) where T
+function pushElements!(elementArray::AbstractVector{Element}, dim::Int64, attributes::AbstractVector{Int64},
+    nodeTags::AbstractVector{T}, elementDict = createElementDict()) where T
     numOfNodesPerElement = length(nodeTags)
     gmshElementType::Int64 = getGmshElementType(elementDict, numOfNodesPerElement, dim)
     push!(elementArray, Element(dim, gmshElementType, attributes, nodeTags, numOfNodesPerElement))
@@ -85,15 +85,18 @@ end
 
     push!(elementArray, dim, attributes, nodeTags, elementDict)
 
-nodeTags represents the connectivity of all the elements. Each row is the connectivity of a
+nodeTags represents the connectivity of all the elements. Each column is the connectivity of a
 single element.
 """
-function push!(elementArray::Array{Element, 1}, dim::Int64, attributes::Array{Int64, 1},
-    nodeTags::Array{T, 2}, elementDict = createElementDict()) where T
-    numOfNodesPerElement = length(nodeTags[1,:])
+function pushElements!(elementArray::AbstractVector{Element}, dim::Int64, attributes::AbstractVector{Int64},
+    nodeTags::AbstractMatrix{Int})
+
+    elementDict = createElementDict()
+    
+    numOfNodesPerElement = length(nodeTags[:,1])
     gmshElementType::Int64 = getGmshElementType(elementDict, numOfNodesPerElement, dim)
-    for i ∈ 1:length(nodeTags[:,1])
-        Base.push!(elementArray, Element(dim, gmshElementType, attributes, nodeTags[i,:], numOfNodesPerElement))
+    for i ∈ 1:length(nodeTags[1, :])
+        Base.push!(elementArray, Element(dim, gmshElementType, attributes, nodeTags[:, i], numOfNodesPerElement))
     end
     return nothing
 end
