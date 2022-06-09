@@ -33,10 +33,8 @@ function writeElements(elementArray::Array{Element, 1})
     for elementNo ∈ 1:length(elementArray)
         docCharArray = vcat(docCharArray, collect(string(elementNo)), [' '],
         collect(string(elementArray[elementNo].gmshElementType)), [' '],
-        getAttribCharArray(elementArray[elementNo].attributes), [' '])
-        for attribNo ∈ 1:length(elementArray[elementNo].attributes)
-            docCharArray = vcat(docCharArray, collect(string(elementArray[elementNo].attributes[attribNo])))
-        end
+        collect("$(length(elementArray[elementNo].attributes)) "),
+        getAttribCharArray(elementArray[elementNo].attributes))
         for nodeNo ∈ 1:length(elementArray[elementNo].nodeTags)
             docCharArray = vcat(docCharArray, [' '], collect(string(elementArray[elementNo].nodeTags[nodeNo])))
         end
